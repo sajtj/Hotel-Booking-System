@@ -7,6 +7,9 @@ class Hotel(BaseModel):
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
 
+    def __str__(self):
+        return f"{self.name}"
+
 class Room(BaseModel):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name="rooms")
     number = models.CharField(max_length=10)
@@ -19,6 +22,9 @@ class Room(BaseModel):
                 name="unique_room_number_per_hotel"
             )
         ]
+    
+    def __str__(self):
+        return f"{self.hotel}  -  {self.number}"
 
 class Booking(BaseModel):
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name="bookings")
@@ -33,3 +39,6 @@ class Booking(BaseModel):
                 name="unique_booking_constraint",
             )
         ]
+
+    def __str__(self):
+        return f"{self.user} - {self.room} | {self.start_time} - {self.end_time}"

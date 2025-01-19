@@ -12,6 +12,5 @@ class RoomFilter(FilterSet):
     class Meta:
         model = Room
         fields = {
-            'hotel': ['exact'],
             'capacity': ['gte', 'lte'],
         }
