@@ -14,7 +14,7 @@ from datetime import timedelta
 from .models import Hotel, Room, Booking
 from .filters import HotelFilter, RoomFilter
 from .services import create_booking, unbooking
-from .selectors import hotel_list, get_room, available_rooms_list, booking_list, room_booking_list, get_booking
+from .selectors import hotel_list, get_room, room_list, booking_list, room_booking_list, get_booking
 
 
 
@@ -27,14 +27,14 @@ class HotelApi(ApiAuthMixin, APIView):
         location = serializers.CharField(required=False, max_length=100)
 
     class HotelOutputSerializer(serializers.ModelSerializer):
-        available_rooms = serializers.SerializerMethodField('available_rooms_count')
+        rooms = serializers.SerializerMethodField('rooms_count')
 
         class Meta:
             model = Hotel
-            fields = ["id", "name", "location", "available_rooms"]
+            fields = ["id", "name", "location", "rooms"]
 
-        def available_rooms_count(self, hotel):
-            return hotel.rooms.filter(bookings__isnull=True).count()
+        def rooms_count(self, hotel):
+            return hotel.rooms.all().count()
 
 
     @extend_schema(
@@ -75,7 +75,7 @@ class HotelDetailApi(ApiAuthMixin, APIView):
             responses=HotelDetailOutputSerializer
         )
     def get(self, request, hotel_id):
-        query = available_rooms_list(hotel_id=hotel_id)
+        query = room_list(hotel_id=hotel_id)
         filterset = self.filterset_class(data=request.query_params, queryset=query)
         if filterset.is_valid():
             query = filterset.qs

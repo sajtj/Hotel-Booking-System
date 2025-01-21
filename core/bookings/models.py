@@ -32,13 +32,6 @@ class Booking(BaseModel):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["room", "start_time", "end_time"],
-                name="unique_booking_constraint",
-            )
-        ]
 
     def __str__(self):
         return f"{self.user} - {self.room} | {self.start_time} - {self.end_time}"
